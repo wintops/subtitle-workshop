@@ -12,8 +12,7 @@ uses
   Forms, Windows, Classes, SysUtils, Controls, StdCtrls, Mask, Menus, IniFiles, Dialogs, Graphics, Messages, ClipBrd, ExtCtrls, Math, //Dialogs, Graphics, Messages, ClipBrd, ExtCtrls, Math added by adenry
   VirtualTrees,
   FastStrings,
-  TntSysUtils,
-  TntClasses,
+  //TntSysUtils,   TntClasses,
   USubtitleAPI, CommonTypes;
 
 // -----------------------------------------------------------------------------
@@ -36,10 +35,10 @@ const
   ID_OCREXT       = '.ocr';
   ID_SHORTCUTS    = 'shortcuts.key';
 
-  SpecialChars  : set of Char = ['¡', '!', '"', '#', '$', '%', '&', '''', '(', ')', '+', '-', '.', '/',
-                                 ':', ';', '<', '=', '>', '¿', '?', '@', '[', '\', ']', '^', '_', '`',
-                                 '{', '|', '}', '~', '€', '‚', 'ƒ', '„', '…', '†', '‡', 'ˆ', '‰', '‹',// '«', '»', //last two added by adenry
-                                 '‘', '’', '“', '”', '•', '-', '—', '˜', '™', '›', #13, #10, ' ', ',']; //',' added by adenry
+  SpecialChars  : set of Char = [#13, #10];//'' ', '!', '"', '#', '$', '%', '&', '''', '(', ')', '+', '-', '.', '/',
+                                 //':', ';', '<', '=', '>', '', '?', '@', '[', '\', ']', '^', '_', '`',
+                                // '{', '|', '}', '~', '€', '', '', '?, '', '', '', '', '', '',//  //last two added by adenry
+                                //   #13, #10, ' ', ',']; //',' added by adenry
 
   Alphanumeric: set of Char = ['a'..'z', 'A'..'Z', '0'..'9']; //added by adenry
   HexChars: set of Char = ['A'..'F', 'a'..'f' , '0'..'9']; //added by adenry
@@ -253,7 +252,7 @@ begin
 //added by aenry: begin
 Result := False;
 //check if the file exists
-if WideFileExists(FileName) = FALSE then
+if FileExists(FileName) = FALSE then
 begin
   MsgBox(Format(ErrorMsg[27], [FileName]), BTN_OK, '', '', MB_ICONERROR, frmMain);
 end else
@@ -289,7 +288,7 @@ begin
 
     if SubtitleAPI.LoadSubtitle(FileName, FPS, frmMain.OrgCharset, DetectedEncoding, SubtitleFormat) = True then
     begin
-      dlgLoadFile.InitialDir := ExtractFilePath(FileName);
+      //dlgLoadFile.InitialDir := ExtractFilePath(FileName);
       AddToRecent(FileName);
       //frmMain.lstSubtitles.BeginUpdate;
       AddArrayItems(TranslatedFile);
@@ -514,7 +513,7 @@ end;
 
 function LoadPlainText(const FileName: WideString; Translation: Boolean = False): Boolean; //procedure converted to a function by adenry //Translation added by adenry
 var
-  PlainTxt    : TTntStringList;
+  PlainTxt    : TStringList;
   Node        : PVirtualNode;
   i           : Integer;
   InitialTime : Integer;
@@ -524,7 +523,7 @@ begin
 
   InitialTime := 0;
   FinalTime   := frmMain.DefaultSubDuration; //1000 replaced with frmMain.DefaultSubDuration by adenry
-  PlainTxt    := TTntStringList.Create;
+  PlainTxt    := TStringList.Create;
 
   if Translation = FALSE then      //added by adenry
     if CloseSub = False then exit;
@@ -540,7 +539,7 @@ begin
           PlainTxt.Delete(i);
       end;
       lstSubtitles.RootNodeCount := PlainTxt.Count;
-      dlgLoadFile.InitialDir := ExtractFilePath(FileName);
+      //dlgLoadFile.InitialDir := ExtractFilePath(FileName);
       
       Node := lstSubtitles.GetFirst;
       while Assigned(Node) do
@@ -1042,7 +1041,7 @@ begin
       if (Flag = True) then
       begin
         // Show new column
-        lstSubtitles.Header.Columns[4].Options := [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus]; //coAllowFocus added by adenry
+        lstSubtitles.Header.Columns[4].Options := [TVTColumnOption.coAllowClick, TVTColumnOption.coDraggable, TVTColumnOption.coEnabled, TVTColumnOption.coParentBidiMode, TVTColumnOption.coParentColor, TVTColumnOption.coResizable, TVTColumnOption.coShowDropMark, TVTColumnOption.coVisible, TVTColumnOption.coAllowFocus]; //coAllowFocus added by adenry
 
         if SaveColsWidth then
         begin
@@ -1118,7 +1117,7 @@ begin
       end else
       if (Flag = False) then
       begin
-        lstSubtitles.Header.Columns[4].Options := [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark];
+        lstSubtitles.Header.Columns[4].Options := [TVTColumnOption.coAllowClick, TVTColumnOption.coDraggable, TVTColumnOption.coEnabled,TVTColumnOption.coParentBidiMode, TVTColumnOption.coParentColor, TVTColumnOption.coResizable, TVTColumnOption.coShowDropMark];
 
         if SaveColsWidth then
         begin
@@ -1269,6 +1268,7 @@ procedure CommandLineProcess(Cli: String);
     Application.Terminate;
   end;
 
+  {
   //by BDZL
   procedure ParamRunScript(Param: String);
   var
@@ -1326,7 +1326,7 @@ procedure CommandLineProcess(Cli: String);
 
     Application.Terminate;
   end;
-
+  }
 var
   Param: String;
 begin
@@ -1350,9 +1350,10 @@ begin
     ParamDelayFile(Cli) else
   if AnsiUpperCase(Copy(Cli, 1, 20)) = '/GETSUPPORTEDFORMATS' then
     SaveFormatsToFile else
-  if AnsiUpperCase(Copy(Cli, 1, 8)) = '/SCRIPT(' then
-    ParamRunScript(Cli);
+ // if AnsiUpperCase(Copy(Cli, 1, 8)) = '/SCRIPT(' then
+  //  ParamRunScript(Cli);
 end;
+
 
 // -----------------------------------------------------------------------------
 
@@ -1539,13 +1540,13 @@ end;
 function SaveFile(FileName: WideString; FormatIndex: Integer; FPS: Single; Charset: Byte): Boolean;
 begin
   Result := False;
-  if WideFileExists(FileName) = False then
+  if FileExists(FileName) = False then
   begin
     SubtitleAPI.SaveSubtitle(FileName, FormatIndex, FPS, Charset);
     Result := True;
   end else
   begin
-    if WideFileIsReadOnly(FileName) = False then
+    if FileIsReadOnly(FileName) = False then
     begin
       SubtitleAPI.SaveSubtitle(FileName, FormatIndex, FPS, Charset);
       Result := True;

@@ -22,6 +22,7 @@ uses
 function StringCount    (const aFindString, aSourceString : string; Const CaseSensitive : Boolean = TRUE): Integer;
 function ReplaceString  (const S, OldPattern, NewPattern: String; ReplaceAll: Boolean = True; IgnoreCase: Boolean = True): String;
 function PadLeft        (const S: String; const PadChar: AnsiChar; const Length: Integer; const Cut: Boolean = False): String;
+
 function PadRight       (const S: AnsiString; const PadChar: AnsiChar; const Length: Integer; const Cut: Boolean): AnsiString;
 function IsInteger      (const Str: String; AddChars: String = ''): Boolean;
 //function LimitDecimals  (Num: Real; Limit: Integer): String; //removed by adenry
@@ -227,7 +228,7 @@ end;}
 //add padding on the left of a string with a specific character
 //for example: to add padding with dots to the left of the string 'dog' so that the total length would be 10, call PadLeft('dog', '.', 10);
 //the result will be '.......dog'; if the Cut parameter is set to True, if the string is shorter than the desired total Length, the string would be cut, otherwise the length of the string would be used, and if the length of the string is shorter than the desired total Length, the Cut parameter has no effect
-function PadLeft(const S : String; const PadChar : Char; const Length : Integer; const Cut : Boolean = False) : String;
+function PadLeft(const S : String; const PadChar : AnsiChar; const Length : Integer; const Cut : Boolean = False) : String;
 var
   F, L, P, M : Integer;
   I, J : PChar;

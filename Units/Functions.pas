@@ -575,7 +575,7 @@ begin
     end;
     for i := 1 to Length(Text) do
     begin
-      if Pos(Text[i],'0123456789+-E' + DecimalSeparator) = 0 then
+      if Pos(Text[i],'0123456789+-E' + FormatSettings.DecimalSeparator) = 0 then
       begin
         Result := False;
         Break;

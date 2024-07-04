@@ -18,7 +18,8 @@ implementation
 
 uses Dialogs, formMain, TreeViewHandle, VirtualTrees, Classes, SysUtils,
   Functions, USubtitlesFunctions, Windows, Math, Forms, StdCtrls, Controls,
-  ShellAPI, TntClasses, TntSystem, TntSysUtils, MiscToolsUnit, formNetflixQcResult;
+  ShellAPI,  MiscToolsUnit, formNetflixQcResult;
+  //TntClasses, TntSystem, TntSysUtils,
 
 type
   TGlyphArray = Array of Integer;
@@ -392,14 +393,14 @@ end;
 
 function SaveString(Str: string; FileName: WideString): Boolean;
 var
-  fileStream: TTntFileStream;
+  fileStream: TFileStream;
 begin
   Result := true;
 
   try
     try
-      fileStream := TTntFileStream.Create(FileName, fmCreate);
-      fileStream.WriteBuffer(PChar(UTF8_BOM)^, SizeOf(UTF8_BOM));
+      fileStream := TFileStream.Create(FileName, fmCreate);
+     // fileStream.WriteBuffer(PChar(UTF8_BOM)^, SizeOf(UTF8_BOM));
       fileStream.WriteBuffer(PChar(str)^, Length(str) * SizeOf(Char));
     except
       Result := false;
@@ -434,7 +435,7 @@ begin
   IsAllSuccess := True;
 
   if frmMain.OrgFile <> '' then
-    CurrentFileName := WideChangeFileExt(WideExtractFileName(frmMain.OrgFile), '')
+    CurrentFileName := ChangeFileExt(ExtractFileName(frmMain.OrgFile), '')
   else
     CurrentFileName := UntitledSubtitle;
 

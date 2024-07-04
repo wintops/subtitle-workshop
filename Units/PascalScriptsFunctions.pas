@@ -10,7 +10,7 @@ interface
 
 uses
   Forms, Controls, SysUtils,
-  VirtualTrees, IFPS3CompExec,
+  VirtualTrees, //IFPS3CompExec,
   CommonTypes;
 
 // -----------------------------------------------------------------------------
@@ -56,7 +56,7 @@ function  MyGetMovieFilepath(): String;
 function  MyGetVideoPosTime(): String;
 function  MyGetVideoPosFrames(): String;
 // -----------------------------------------------------------------------------
-procedure CompExecCompile(Sender: TIFPS3CompExec);
+//procedure CompExecCompile(Sender: TIFPS3CompExec);
 // -----------------------------------------------------------------------------
 
 implementation
@@ -591,6 +591,7 @@ end;
 
 // -----------------------------------------------------------------------------
 
+{
 procedure CompExecCompile(Sender: TIFPS3CompExec);
 begin
   Sender.AddFunction(@MyIsOriginalLoaded,   'function IsOriginalLoaded: Boolean;');
@@ -637,7 +638,7 @@ begin
   Sender.AddRegisteredVariable('Application', 'TApplication');
   //Sender.AddRegisteredVariable('Self', 'TfrmMain');
 end;
-
+}
 // -----------------------------------------------------------------------------
 
 end.

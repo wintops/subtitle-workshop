@@ -84,10 +84,10 @@ begin
             begin
               OCRWordChars := Param.Value;
               if OCRWordChars = '' then
-                OCRWordChars := '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_Ò—·ÈÌÛ˙¡…Õ”⁄‰ÎÔˆ¸';
+                OCRWordChars := '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
             end;
           end else
-            OCRWordChars := '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_Ò—·ÈÌÛ˙¡…Õ”⁄‰ÎÔˆ¸';
+            OCRWordChars := '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
 
           Result := True;
           if Tag.Name = 'ERROR' then
@@ -174,7 +174,7 @@ begin
       begin
         if OCRErrors[i].UseREOnlyToFind = True then
           S := RepRE(OCRErrors[i].Find, S, OCRErrors[i].ReplaceBy) else      //Text replaced with S by adenry
-          S := ReplaceRegExpr(OCRErrors[i].Find, S, OCRErrors[i].ReplaceBy); //Text replaced with S by adenry
+          S := ReplaceRegExpr(OCRErrors[i].Find, S, OCRErrors[i].ReplaceBy,True); //Text replaced with S by adenry
       end else
         S := Replace(S, OCRErrors[i].Find, OCRErrors[i].ReplaceBy, OCRErrors[i].CaseSensitive, OCRErrors[i].WholeWord, OCRErrors[i].PreserveCase); //Text replaced with S by adenry
       //added by adenry: we are only checking for OCR errors. One difference is enough to say there is an OCR error. But not if this error is fixed later in the script...

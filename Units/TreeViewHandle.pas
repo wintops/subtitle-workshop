@@ -103,9 +103,9 @@ var
   OutputLength: Integer;
 begin
   InputLength := Length(S);
-  OutputLength := MultiByteToWideChar(CodePage, 0, PChar(S), InputLength, nil, 0);
+  OutputLength := MultiByteToWideChar(CodePage, 0, PAnsiChar(S), InputLength, nil, 0);
   SetLength(Result, OutputLength);
-  MultiByteToWideChar(CodePage, 0, PChar(S), InputLength, PWideChar(Result), OutputLength);
+  MultiByteToWideChar(CodePage, 0, PAnsiChar(S), InputLength, PWideChar(Result), OutputLength);
 end;
 
 // -----------------------------------------------------------------------------
