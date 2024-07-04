@@ -22,8 +22,9 @@
 unit MiscToolsUnit;
 
 interface
+//TntComCtrls, TntClasses, TntStdCtrls,
 
-uses Classes, Graphics, Types, Richedit, TntComCtrls, TntClasses, StdCtrls, TntStdCtrls, Windows, Messages;
+uses Classes, Graphics, Types, Richedit,  StdCtrls, ComCtrls, Windows, Messages;
 
 type
   TFileVersion = class
@@ -81,7 +82,7 @@ type
   function StripText(const Text : WideString) : WideString;
   function StripTagsKeepNL(const Text : WideString) : WideString;
 
-  function WideIsAbsolutePath(const Path : WideString) : Boolean;
+  function WideIsAbsolutePath(const Path : String) : Boolean;
   function WideMakeRelativePath(const BaseName, DestName : WideString) : WideString;
   function WideResolveRelativePath(const BaseName, DestName : WideString) : WideString;
 
@@ -116,21 +117,22 @@ type
   procedure LoadFromStreamInt(Stream : TStream; out Value : Integer);
 
   // Some faster richedit function
-  procedure SetRESelection(RichEdit : TTntRichEdit; Start, Len : Integer);
-  procedure SetRESelectionColor(ARichEdit : TTntRichEdit; AColor : TColor);
-  procedure SetReUnderline(ARichEdit: TTntRichEdit; Underline : Boolean);
+  procedure SetRESelection(RichEdit : TRichEdit; Start, Len : Integer);
+  procedure SetRESelectionColor(ARichEdit : TRichEdit; AColor : TColor);
+  procedure SetReUnderline(ARichEdit: TRichEdit; Underline : Boolean);
 
   function WC2MB(S : WideString) : string;
   function MB2WC(S : string) : WideString;
 
   procedure SetCheckedState(const checkBox : TCheckBox; const check : Boolean); overload;
-  procedure SetCheckedState(const checkBox : TTntCheckBox; const check : Boolean); overload;
+ // procedure SetCheckedState(const checkBox : TCheckBox; const check : Boolean); overload;
 
 
 const
   WM_EET_UPDATE_PROGRESS    = WM_USER + 101;
   WM_EET_SET_PROCESS_HANDLE = WM_USER + 102;
   WM_EET_PROCESS_FINISHED   = WM_USER + 103;
+  CRLF=#10#13;
 
 type
   TExecuteExternalThread = class(TThread)
@@ -153,14 +155,16 @@ type
   end;
 
 type
-  MyTTntStringList = class(TTntStringList)
+  MyTTntStringList = class(TStringList)
   public
-    procedure LoadFromStream_BOM(Stream: TStream; WithBOM: Boolean); override;
+   // procedure LoadFromStream_BOM(Stream: TStream; WithBOM: Boolean); //override;
   end;  
 
 implementation
 
-uses SysUtils, Registry, ShlObj, StrUtils, TntSysUtils, TntWindows, VFW, TntSystem,
+//TntSysUtils, TntWindows, TntSystem,
+
+uses SysUtils, Registry, ShlObj, StrUtils,  VFW,
   Forms, TlHelp32, PsAPI;
 
 // -----------------------------------------------------------------------------
@@ -420,11 +424,11 @@ var VersionInfoSize : Cardinal;
 begin
   Result := False;
   c1 := 0; c2 := 0; c3 := 0; c4 := 0;
-  VersionInfoSize := GetFileVersionInfoSize(PAnsiChar(Filename), dwHandle);
+  VersionInfoSize := GetFileVersionInfoSize(PWideChar(Filename), dwHandle);
   if (VersionInfoSize > 0) then
   begin
     GetMem(VersionInfo, VersionInfoSize);
-    if GetFileVersionInfo(PAnsiChar(Filename), dwHandle, VersionInfoSize, VersionInfo) then
+    if GetFileVersionInfo(PWideChar(Filename), dwHandle, VersionInfoSize, VersionInfo) then
     begin
       if VerQueryValue(VersionInfo, '\', Pointer(VersionValue), VersionValueSize) then
       begin
@@ -999,25 +1003,25 @@ end;
 
 function WideMakeRelativePath(const BaseName, DestName : WideString) : WideString;
 begin
-  Result := WideExtractRelativePath(BaseName, DestName);
+  Result := ExtractRelativePath(BaseName, DestName);
 end;
 
 // -----------------------------------------------------------------------------
 
-function WideIsAbsolutePath(const Path : WideString) : Boolean;
+function WideIsAbsolutePath(const Path : String) : Boolean;
 begin
   Result := (Pos(':', Path) = 2) or (Pos('\\', Path) = 1);
 end;
 
 // -----------------------------------------------------------------------------
 
-function WideResolvePath(Filename : WideString) : WideString;
+function WideResolvePath(Filename : String) : WideString;
 var i, j, p : integer;
     PathElem : WideString;
 begin
   i := 1;
   p := 1;
-  Filename := Tnt_WideStringReplace(Filename, '/', '\', [rfReplaceAll]);
+  Filename := StringReplace(Filename, '/', '\', [rfReplaceAll]);
   while (p <> 0) do
   begin
     p := PosEx('\', Filename, i);
@@ -1052,7 +1056,7 @@ begin
     Result := DestName
   else if (Length(Trim(DestName)) > 0) then
   begin
-    Result := WideExtractFilePath(BaseName);
+    Result := ExtractFilePath(BaseName);
     Result := Result + DestName;
     Result := WideResolvePath(Result);
   end
@@ -1128,7 +1132,7 @@ function GetTemporaryFolder : WideString;
 var TmpFolderLen : Cardinal;
 begin
   SetLength(Result, MAX_PATH);
-  TmpFolderLen := Tnt_GetTempPathW(MAX_PATH, @Result[1]);
+  TmpFolderLen := GetTempPathW(MAX_PATH, @Result[1]);
   if (TmpFolderLen > 0) then
     SetLength(Result, TmpFolderLen)
   else
@@ -1143,9 +1147,9 @@ function WideStringFind(const Offset : Integer; const S, Pattern: WideString;
 
   function IsWordSeparator(WC: WideChar): Boolean;
   begin
-    Result := (WC = WideChar(#0))
-           or IsWideCharSpace(WC)
-           or IsWideCharPunct(WC);
+    Result := (WC = WideChar(#0)) ;
+          // or IsWideCharSpace(WC)
+          // or IsWideCharPunct(WC);
   end;
 
 var
@@ -1162,8 +1166,8 @@ begin
   end;
   if IgnoreCase then
   begin
-    SearchStr := Tnt_WideUpperCase(S);
-    Patt := Tnt_WideUpperCase(Pattern);
+    SearchStr := UpperCase(S);
+    Patt := UpperCase(Pattern);
   end else
   begin
     SearchStr := S;
@@ -1209,9 +1213,9 @@ function WideStringCount(const S, Pattern: WideString;
 
   function IsWordSeparator(WC: WideChar): Boolean;
   begin
-    Result := (WC = WideChar(#0))
-           or IsWideCharSpace(WC)
-           or IsWideCharPunct(WC);
+    Result := (WC = WideChar(#0));
+          // or IsWideCharSpace(WC)
+          // or IsWideCharPunct(WC);
   end;
 
 var
@@ -1228,8 +1232,8 @@ begin
   end;
   if IgnoreCase then
   begin
-    SearchStr := Tnt_WideUpperCase(S);
-    Patt := Tnt_WideUpperCase(Pattern);
+    SearchStr := UpperCase(S);
+    Patt := UpperCase(Pattern);
   end else
   begin
     SearchStr := S;
@@ -1281,31 +1285,31 @@ end;
 function ConvertSSAToSRT(Src : WideString) : WideString;
 begin
   // Italic
-  Result := Tnt_WideStringReplace(Src, '{\i1}', '<i>', [rfReplaceAll]);
-  Result := Tnt_WideStringReplace(Result, '{\i0}', '</i>', [rfReplaceAll]);
+  Result := StringReplace(Src, '{\i1}', '<i>', [rfReplaceAll]);
+  Result := StringReplace(Result, '{\i0}', '</i>', [rfReplaceAll]);
 
   // Bold
-  Result := Tnt_WideStringReplace(Result, '{\b1}', '<b>', [rfReplaceAll]);
-  Result := Tnt_WideStringReplace(Result, '{\b0}', '</b>', [rfReplaceAll]);
+  Result := StringReplace(Result, '{\b1}', '<b>', [rfReplaceAll]);
+  Result := StringReplace(Result, '{\b0}', '</b>', [rfReplaceAll]);
 
   // Underline
-  Result := Tnt_WideStringReplace(Result, '{\u1}', '<u>', [rfReplaceAll]);
-  Result := Tnt_WideStringReplace(Result, '{\u0}', '</u>', [rfReplaceAll]);
+  Result := StringReplace(Result, '{\u1}', '<u>', [rfReplaceAll]);
+  Result := StringReplace(Result, '{\u0}', '</u>', [rfReplaceAll]);
 end;
 
 function ConvertSRTToSSA(Src : WideString) : WideString;
 begin
   // Italic
-  Result := Tnt_WideStringReplace(Src, '<i>', '{\i1}', [rfReplaceAll]);
-  Result := Tnt_WideStringReplace(Result, '</i>', '{\i0}', [rfReplaceAll]);
+  Result := StringReplace(Src, '<i>', '{\i1}', [rfReplaceAll]);
+  Result := StringReplace(Result, '</i>', '{\i0}', [rfReplaceAll]);
 
   // Bold
-  Result := Tnt_WideStringReplace(Result, '<b>', '{\b1}', [rfReplaceAll]);
-  Result := Tnt_WideStringReplace(Result, '</b>', '{\b0}', [rfReplaceAll]);
+  Result := StringReplace(Result, '<b>', '{\b1}', [rfReplaceAll]);
+  Result := StringReplace(Result, '</b>', '{\b0}', [rfReplaceAll]);
 
   // Underline
-  Result := Tnt_WideStringReplace(Result, '<u>', '{\u1}', [rfReplaceAll]);
-  Result := Tnt_WideStringReplace(Result, '</u>', '{\u0}', [rfReplaceAll]);
+  Result := StringReplace(Result, '<u>', '{\u1}', [rfReplaceAll]);
+  Result := StringReplace(Result, '</u>', '{\u0}', [rfReplaceAll]);
 end;
 
 function ConvertNull(Src : WideString) : WideString;
@@ -1383,15 +1387,15 @@ end;
 
 // -----------------------------------------------------------------------------
 
-procedure SetRESelection(RichEdit : TTntRichEdit; Start, Len : Integer);
+procedure SetRESelection(RichEdit : TRichEdit; Start, Len : Integer);
 var cr : CHARRANGE;
 begin
-  cr.cpMin := RichEdit.RawWin32CharPos(Start);
+  //cr.cpMin := RichEdit.RawWin32CharPos(Start);
   cr.cpMax := cr.cpMin + Len;
   RichEdit.Perform(EM_EXSETSEL, 0, Longint(@(cr)));
 end;
 
-procedure SetRESelectionColor(ARichEdit : TTntRichEdit; AColor : TColor);
+procedure SetRESelectionColor(ARichEdit : TRichEdit; AColor : TColor);
 var Format: CHARFORMAT2;
 begin
   FillChar(Format, SizeOf(Format), 0);
@@ -1412,7 +1416,7 @@ const
   CFU_UNDERLINE = 1;
   CFU_UNDERLINENONE = 0;
   
-procedure SetRECharFormat(ARichEdit: TTntRichEdit; AUnderlineType: Byte; AColor: Word);
+procedure SetRECharFormat(ARichEdit: TRichEdit; AUnderlineType: Byte; AColor: Word);
 var
   // The CHARFORMAT2 structure contains information about
   // character formatting in a rich edit control.
@@ -1428,7 +1432,7 @@ begin
   end;
 end;
 
-procedure SetReUnderline(ARichEdit: TTntRichEdit; Underline : Boolean);
+procedure SetReUnderline(ARichEdit: TRichEdit; Underline : Boolean);
 begin
   if (Underline) then
     SetRECharFormat(ARichEdit, CFU_UNDERLINEWAVE, $50)
@@ -1456,10 +1460,12 @@ begin
   SetLength(Result, realLen);
 end;
 
+
+{
 procedure MyTTntStringList.LoadFromStream_BOM(Stream: TStream; WithBOM: Boolean);
 var
   DataLeft: Integer;
-  StreamCharSet: TTntStreamCharSet;
+  StreamCharSet: TStream;
   SW: WideString;
   SA: AnsiString;
 
@@ -1470,6 +1476,7 @@ begin
       StreamCharSet := AutoDetectCharacterSet(Stream)
     else
       StreamCharSet := csUnicode;
+
     DataLeft := Stream.Size - Stream.Position;
     if (StreamCharSet in [csUnicode, csUnicodeSwapped]) then
     begin
@@ -1502,7 +1509,7 @@ begin
     EndUpdate;
   end;
 end;
-
+ }
 // -----------------------------------------------------------------------------
 
 procedure SetCheckedState(const checkBox : TCheckBox; const check : Boolean);
@@ -1518,6 +1525,7 @@ begin
   end;
 end;
 
+{
 procedure SetCheckedState(const checkBox : TTntCheckBox; const check : Boolean);
 var
   onClickHandler : TNotifyEvent;
@@ -1530,7 +1538,7 @@ begin
     OnClick := onClickHandler;
   end;
 end;
-
+}
 // -----------------------------------------------------------------------------
 
 constructor TExecuteExternalThread.Create(CommandLine: WideString; WorkDir: WideString; ApplicationName: WideString = ''; UseCmd: Boolean = True; MsgHandle: HWnd = 0);
@@ -1569,7 +1577,7 @@ begin
   Result := nil;
   if FApplicationName = '' then Exit;
 
-  ApplicationName := WideIncludeTrailingPathDelimiter(FWorkDir) + FApplicationName;
+  ApplicationName := IncludeTrailingPathDelimiter(FWorkDir) + FApplicationName;
   Result := PWideChar(ApplicationName);
 end;
 

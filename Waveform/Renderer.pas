@@ -179,7 +179,7 @@ type
 
 implementation
 
-uses ActiveX, MMSystem, SysUtils, Types, MiscToolsUnit, Math, TntSysUtils;
+uses ActiveX, MMSystem, SysUtils, Types, MiscToolsUnit, Math;//, TntSysUtils;
 
 const
   CLSID_WavWriter : TGUID = '{F3AFF1C3-ABBB-41f9-9521-988881D9D640}';
@@ -580,7 +580,7 @@ begin
   if Assigned(FGraphBuilder) then
     Close;
   Result := False;
-  if (filename = '') or (not WideFileExists(filename)) then
+  if (filename = '') or (not FileExists(filename)) then
     Exit;
 
   CoInitializeEx(nil, COINIT_MULTITHREADED);
@@ -1641,7 +1641,7 @@ begin
       else if (FWAVExtractionType = wetFastConversion) then
         WavWriterInterface.SetFastConversionMode(1);
       WavWriterInterface.SetWritePeakFile(1);
-      DestinationFilenamePeak := WideChangeFileExt(DestinationFilename,'.peak');
+      DestinationFilenamePeak := ChangeFileExt(DestinationFilename,'.peak');
       WavWriterInterface.SetPeakFileName(@DestinationFilenamePeak[1]);
       WavWriterInterface.SetSamplesPerPeakRatio(100);
       WavWriterInterface := nil;

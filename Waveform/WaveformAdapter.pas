@@ -84,8 +84,8 @@ type
 
 implementation
 
-uses
-  TreeViewHandle, TntSysUtils, MiscToolsUnit, uLkJSON, Dialogs, USubtitlesFunctions;
+uses              //TntSysUtils,
+  TreeViewHandle,  MiscToolsUnit, uLkJSON, Dialogs, USubtitlesFunctions;
   
 // Common utility routines
 
@@ -188,7 +188,7 @@ begin
   end;
 
   if FWAVFilename <> '' then begin
-    if FWAVTemp then WideDeleteFile(FWAVFilename);
+    if FWAVTemp then DeleteFile(FWAVFilename);
   end;
 
   FWAVFilename := '';

@@ -51,7 +51,7 @@ type
 implementation
 
 uses
-  TntSysUtils,
+  //TntSysUtils,
   MiscToolsUnit,
   Windows,
   formExecutionProgress;
@@ -63,9 +63,9 @@ end;
 
 procedure TFFMPEGHelper.SetSettings(toolPath: WideString; sampleRate: Integer);
 begin
-  toolPath := WideExpandFileName(toolPath);
-  if  WideFileExists(WideIncludeTrailingPathDelimiter(toolPath) + 'ffmpeg.exe') and
-      WideFileExists(WideIncludeTrailingPathDelimiter(toolPath) + 'ffprobe.exe')then
+  toolPath := ExpandFileName(toolPath);
+  if  FileExists(IncludeTrailingPathDelimiter(toolPath) + 'ffmpeg.exe') and
+      FileExists(IncludeTrailingPathDelimiter(toolPath) + 'ffprobe.exe')then
   begin
     FToolPath := toolPath;
     FToolDetected := True;
@@ -89,7 +89,7 @@ end;
 
 function TFFMPEGHelper.BuildTempPath(filename: WideString; extension: String): WideString;
 begin
-  Result := WideChangeFileExt(GetTemporaryFolder + WideExtractFileName(filename), extension);
+  Result := ChangeFileExt(GetTemporaryFolder + ExtractFileName(filename), extension);
 end;
 
 procedure TFFMPEGHelper.Execute(command: WideString; args: array of const);
@@ -132,7 +132,7 @@ begin
 
   Result := not FrmProgress.ExecutionCancelled;
 
-  if not Result and WideFileExists(filename) then WideDeleteFile(filename);
+  if not Result and FileExists(filename) then DeleteFile(pwidechar(filename));
 end;
 
 function TFFMPEGHelper.JsonToAudioStream(json: TlkJSONobject): TAudioStream;
@@ -199,12 +199,12 @@ begin
 
   obj.Free;
 
-  WideDeleteFile(tmpJsonPath);
+  DeleteFile(pwidechar(tmpJsonPath));
 end;
 
 function TFFMPEGHelper.IsWAVFile(filename: WideString): Boolean;
 begin
-  Result := UpperCase(WideExtractFileExt(filename)) = '.WAV';
+  Result := UpperCase(ExtractFileExt(filename)) = '.WAV';
 end;
 
 end.

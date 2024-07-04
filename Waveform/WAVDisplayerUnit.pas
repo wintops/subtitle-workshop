@@ -425,7 +425,7 @@ procedure KaraSplit2(const Text : WideString; var WordArray : TWideStringDynArra
 
 implementation
 
-uses SysUtils, MiscToolsUnit, TntClasses, TntSysUtils, VirtualTrees;
+uses SysUtils, MiscToolsUnit, VirtualTrees;  //TntClasses, TntSysUtils,
 
 const
   WAV_COLOR : TColor = $00A7F24A;
@@ -447,7 +447,7 @@ procedure KaraSplit(const Text : WideString; var WordArray : TWideStringDynArray
   var TimeArray : TIntegerDynArray);
 var
   i, i1, i2 : integer;
-  s : WideString;
+  s : String;
 begin
   SetLength(WordArray, 0);
   SetLength(TimeArray, 0);
@@ -494,7 +494,7 @@ procedure KaraSplit2(const Text : WideString; var WordArray : TWideStringDynArra
   var TimeArray : TIntegerDynArray);
 var
   i, i1, i2 : integer;
-  s : WideString;
+  s : String;
 begin
   SetLength(WordArray, 0);
   SetLength(TimeArray, 0);
@@ -1405,8 +1405,7 @@ begin
   r.Top := y1;
   r.Bottom := y2;
 
-  VirtualTrees.AlphaBlend(ACanvas.Handle, ACanvas.Handle, r,
-    Point(0,0), bmConstantAlphaAndColor, 80, ACanvas.Pen.Color);
+ // VirtualTrees.AlphaBlend(ACanvas.Handle, ACanvas.Handle, r,     Point(0,0), bmConstantAlphaAndColor, 80, ACanvas.Pen.Color);
 end;
 
 //------------------------------------------------------------------------------
@@ -3233,7 +3232,7 @@ begin
   FPeakDataLoaded := False;
 
   // No file
-  if not WideFileExists(filename) then
+  if not FileExists(filename) then
   begin
     Result := False;
     Exit;
