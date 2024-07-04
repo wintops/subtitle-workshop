@@ -10,7 +10,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, Dialogs, ImgList, ComCtrls, IniFiles,
-  FastStrings, TntDialogs;
+  FastStrings, System.ImageList;//, TntDialogs;
 
 // -----------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ type
     chkAllFormats: TCheckBox;
     lstFormats: TListView;
     lblDblClick: TLabel;
-    dlgSave: TTntSaveDialog;
+    dlgSave: TSaveDialog;
     btnCustomFormat: TButton;
     btnCancel: TButton;
     ImageList: TImageList;

@@ -9,7 +9,8 @@ unit formCustomFormats;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, IniFiles,
+  Vcl.Mask;
 
 type
   TfrmCustomFormats = class(TForm)
@@ -213,7 +214,7 @@ procedure TfrmCustomFormats.btnSaveClick(Sender: TObject);
 begin
   UpdateArray(-666); //format index added by adenry
   dlgSave.Filter     := edtFormatName.Text + ' (' + edtExtension.Text + ')|' + edtExtension.Text;
-  dlgSave.InitialDir := frmMain.dlgLoadFile.InitialDir;
+  //dlgSave.InitialDir := frmMain.dlgLoadFile.InitialDir;
   if (dlgSave.Execute) and (dlgSave.FileName <> '') then
   begin
     if AnsiLowerCase(ExtractFileExt(dlgSave.FileName)) <> AnsiLowerCase(Copy(edtExtension.Text, 2, Length(edtExtension.Text))) then

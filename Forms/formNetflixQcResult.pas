@@ -4,16 +4,16 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, TntStdCtrls;
+  Dialogs, StdCtrls;//, TntStdCtrls;
 
 type
   TfrmNetflixQcResult = class(TForm)
-    lblLink1: TTntLabel;
-    lblPref1: TTntLabel;
-    lblPostf1: TTntLabel;
-    lblLink2: TTntLabel;
-    lblPref2: TTntLabel;
-    lblPostf2: TTntLabel;
+    lblLink1: TLabel;
+    lblPref1: TLabel;
+    lblPostf1: TLabel;
+    lblLink2: TLabel;
+    lblPref2: TLabel;
+    lblPostf2: TLabel;
     btnLocateFile: TButton;
     btnOk: TButton;
     procedure btnOkClick(Sender: TObject);
@@ -25,7 +25,7 @@ type
     { Private declarations }
     FFileToLocate: WideString;
 
-    procedure PlaceLabels(PrefLbl: TTntLabel; LinkLbl: TTntLabel; PostfLbl: TTntLabel;
+    procedure PlaceLabels(PrefLbl: TLabel; LinkLbl: TLabel; PostfLbl: TLabel;
       Msg: WideString; Link: WideString);
     procedure PlaceButtons;
     procedure OpenFileLocation(FilePath: WideString); 
@@ -64,7 +64,7 @@ begin
   KeyPreview := True;
 end;
 
-procedure TfrmNetflixQcResult.PlaceLabels(PrefLbl: TTntLabel; LinkLbl: TTntLabel; PostfLbl: TTntLabel;
+procedure TfrmNetflixQcResult.PlaceLabels(PrefLbl: TLabel; LinkLbl: TLabel; PostfLbl: TLabel;
   Msg: WideString; Link: WideString);
 var
   LinkStartPos: Integer;
@@ -137,7 +137,7 @@ procedure TfrmNetflixQcResult.lblLinkClick(Sender: TObject);
 var
   Caption: WideString;
 begin
-  Caption := (Sender as TTntLabel).Caption;
+  Caption := (Sender as TLabel).Caption;
 
   if Caption <> '' then
     OpenFileLocation(Caption);

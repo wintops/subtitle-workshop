@@ -13,11 +13,9 @@ object frmBatchConvert: TfrmBatchConvert
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 96
   TextHeight = 13
   object bvlPgeBtnSeparator: TBevel
     Left = 8
@@ -193,20 +191,22 @@ object frmBatchConvert: TfrmBatchConvert
     object lblDescription: TLabel
       Left = 26
       Top = 24
-      Width = 367
+      Width = 361
       Height = 33
       Anchors = [akLeft, akTop, akRight]
       AutoSize = False
       Caption = 'Convert multiple files to a single format in a few steps.'
       WordWrap = True
+      ExplicitWidth = 367
     end
     object bvlSeparator: TBevel
       Left = -8
       Top = 55
-      Width = 464
+      Width = 458
       Height = 9
       Anchors = [akLeft, akRight, akBottom]
       Shape = bsTopLine
+      ExplicitWidth = 464
     end
   end
   object btnClose: TButton
@@ -306,7 +306,7 @@ object frmBatchConvert: TfrmBatchConvert
           Width = 161
           Height = 233
           Ctl3D = True
-          ItemHeight = 13
+          ItemHeight = 17
           ParentCtl3D = False
           TabOrder = 1
         end
@@ -319,6 +319,7 @@ object frmBatchConvert: TfrmBatchConvert
           EditLabel.Height = 13
           EditLabel.Caption = 'Search path:'
           TabOrder = 2
+          Text = ''
         end
         object btnBrowse: TButton
           Left = 176
@@ -335,7 +336,6 @@ object frmBatchConvert: TfrmBatchConvert
           Width = 153
           Height = 21
           Style = csDropDownList
-          ItemHeight = 13
           TabOrder = 4
         end
         object cmbOutputFormat: TComboBox
@@ -344,7 +344,6 @@ object frmBatchConvert: TfrmBatchConvert
           Width = 257
           Height = 21
           Style = csDropDownList
-          ItemHeight = 13
           Sorted = True
           TabOrder = 5
         end
@@ -374,6 +373,7 @@ object frmBatchConvert: TfrmBatchConvert
           EditLabel.Height = 13
           EditLabel.Caption = 'Output directory:'
           TabOrder = 8
+          Text = ''
         end
         object btnAll: TButton
           Left = 8
@@ -398,6 +398,8 @@ object frmBatchConvert: TfrmBatchConvert
         Left = 0
         Top = 0
         Caption = 'pgeFiles'
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object lstFiles: TListView
           Left = 8
           Top = 8
@@ -460,7 +462,6 @@ object frmBatchConvert: TfrmBatchConvert
           Width = 160
           Height = 21
           Style = csDropDownList
-          ItemHeight = 0
           TabOrder = 4
           OnChange = cmbFPSChange
         end
@@ -476,6 +477,8 @@ object frmBatchConvert: TfrmBatchConvert
         Left = 0
         Top = 0
         Caption = 'pgeDone'
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object lblDone: TLabel
           Left = 8
           Top = 8

@@ -11,7 +11,8 @@ unit formBatchConvert;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, CheckLst, ComCtrls, ExtCtrls, IniFiles, FileCtrl;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, CheckLst, ComCtrls, ExtCtrls, IniFiles, FileCtrl,
+  Vcl.Mask;
 
 type
   TfrmBatchConvert = class(TForm)

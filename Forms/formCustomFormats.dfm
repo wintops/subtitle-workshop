@@ -12,11 +12,9 @@ object frmCustomFormats: TfrmCustomFormats
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 96
   TextHeight = 13
   object gbInformation: TGroupBox
     Left = 8
@@ -40,10 +38,11 @@ object frmCustomFormats: TfrmCustomFormats
       Width = 153
       Height = 21
       EditLabel.Width = 31
-      EditLabel.Height = 13
+      EditLabel.Height = 21
       EditLabel.Caption = 'Name:'
       LabelPosition = lpLeft
       TabOrder = 0
+      Text = ''
     end
     object edtExtension: TLabeledEdit
       Left = 128
@@ -52,7 +51,7 @@ object frmCustomFormats: TfrmCustomFormats
       Height = 21
       BiDiMode = bdLeftToRight
       EditLabel.Width = 51
-      EditLabel.Height = 13
+      EditLabel.Height = 21
       EditLabel.BiDiMode = bdLeftToRight
       EditLabel.Caption = 'Extension:'
       EditLabel.ParentBiDiMode = False
@@ -67,7 +66,7 @@ object frmCustomFormats: TfrmCustomFormats
       Width = 97
       Height = 21
       EditLabel.Width = 49
-      EditLabel.Height = 13
+      EditLabel.Height = 21
       EditLabel.Caption = 'Structure:'
       LabelPosition = lpLeft
       TabOrder = 5
@@ -97,7 +96,6 @@ object frmCustomFormats: TfrmCustomFormats
       Width = 97
       Height = 21
       Style = csDropDownList
-      ItemHeight = 13
       TabOrder = 6
     end
     object edtNewLineChar: TLabeledEdit
@@ -107,7 +105,7 @@ object frmCustomFormats: TfrmCustomFormats
       Height = 21
       BiDiMode = bdLeftToRight
       EditLabel.Width = 68
-      EditLabel.Height = 13
+      EditLabel.Height = 21
       EditLabel.BiDiMode = bdLeftToRight
       EditLabel.Caption = 'New line char:'
       EditLabel.ParentBiDiMode = False

@@ -1670,8 +1670,9 @@ begin
     Ini.WriteInteger('List look', 'Pause column display style', cmbPauseColStyle.ItemIndex);
     //added by adenry: end
     if chkShowGridLines.Checked then
-      frmMain.lstSubtitles.TreeOptions.PaintOptions := [toShowHorzGridLines, toShowVertGridLines, toShowButtons, toShowDropmark, toShowTreeLines,toThemeAware,toUseBlendedImages,toAlwaysHideSelection] else //,toAlwaysHideSelection added by adenry - selection background is painted manually!
-      frmMain.lstSubtitles.TreeOptions.PaintOptions := [toShowButtons, toShowDropmark, toShowTreeLines,toThemeAware,toUseBlendedImages,toAlwaysHideSelection]; //,toAlwaysHideSelection added by adenry
+
+      frmMain.lstSubtitles.TreeOptions.PaintOptions := [TVTPaintOption.toShowHorzGridLines, TVTPaintOption.toShowVertGridLines, TVTPaintOption.toShowButtons, TVTPaintOption.toShowDropmark, TVTPaintOption.toShowTreeLines,TVTPaintOption.toThemeAware,TVTPaintOption.toUseBlendedImages,TVTPaintOption.toAlwaysHideSelection] else //,toAlwaysHideSelection added by adenry - selection background is painted manually!
+      frmMain.lstSubtitles.TreeOptions.PaintOptions := [TVTPaintOption.toShowButtons, TVTPaintOption.toShowDropmark, TVTPaintOption.toShowTreeLines,TVTPaintOption.toThemeAware,TVTPaintOption.toUseBlendedImages,TVTPaintOption.toAlwaysHideSelection]; //,toAlwaysHideSelection added by adenry
     frmMain.MarkUntransSubs  := chkMarkUntransSubs.Checked;
     frmMain.ApplyStyleInList := chkApplyStyle.Checked;
     frmMain.UnTransSubsColor := pnlUnTransColor.Color;
@@ -1682,8 +1683,8 @@ begin
       frmMain.lstSubtitles.ScrollBarOptions.ScrollBars := ssBoth;
     //added by adenry: begin
     if chkRightClickSel.Checked then
-      frmMain.lstSubtitles.TreeOptions.SelectionOptions := frmMain.lstSubtitles.TreeOptions.SelectionOptions + [toRightClickSelect] else
-      frmMain.lstSubtitles.TreeOptions.SelectionOptions := frmMain.lstSubtitles.TreeOptions.SelectionOptions - [toRightClickSelect];      
+      frmMain.lstSubtitles.TreeOptions.SelectionOptions := frmMain.lstSubtitles.TreeOptions.SelectionOptions + [TVTSelectionOption.toRightClickSelect] else
+      frmMain.lstSubtitles.TreeOptions.SelectionOptions := frmMain.lstSubtitles.TreeOptions.SelectionOptions - [TVTSelectionOption.toRightClickSelect];
     //added by adenry: end
     //added by adenry: begin
     Node := frmMain.lstSubtitles.GetFirst;

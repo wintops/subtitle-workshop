@@ -613,10 +613,10 @@ begin
   lblAutoExt.Enabled     := chkAutoName.Checked;
   if chkAutoName.Checked then
   begin
-    lstSplitParts.TreeOptions.MiscOptions := lstSplitParts.TreeOptions.MiscOptions - [toEditable];
+    lstSplitParts.TreeOptions.MiscOptions := lstSplitParts.TreeOptions.MiscOptions - [TVTMiscOption.toEditable];
     cmbSuffixNameChange(Self);
   end else
-    lstSplitParts.TreeOptions.MiscOptions := lstSplitParts.TreeOptions.MiscOptions + [toEditable];
+    lstSplitParts.TreeOptions.MiscOptions := lstSplitParts.TreeOptions.MiscOptions + [TVTMiscOption.toEditable];
 end;
 
 // -----------------------------------------------------------------------------

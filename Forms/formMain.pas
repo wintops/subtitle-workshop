@@ -14,12 +14,13 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, Menus, ComCtrls, IniFiles, ImgList,
     ShellAPI, ClipBrd, URLMon, FileCtrl, Grids, ToolWin, Mask, Math, {XPMan,} RichEdit, SymbolDlg, //Math, RichEdit, XPMan added by adenry
   VirtualTrees, MiMenu, MiSubtitulo, {MiHint,} {NFormSizing,} SWSeekBar, SWButton, USSpeller, SWTimeCounter, TimeMaskEdit, //MiHint, NFormSizing removed by adenry
-    IFPS3CompExec, ifpsComp, ifps3,
-    ifpii_controls, ifpii_std, ifpii_classes, ifpii_graphics, ifpii_forms, ifpii_stdctrls, ifpii_extctrls, ifpii_menus, ifpidateutils,
-    ifpiir_controls, ifpiir_std, ifpiir_classes, ifpiir_graphics, ifpiir_forms, ifpiir_stdctrls, ifpiir_extctrls, ifpiir_menus, ifpidateutilsr,
+    //IFPS3CompExec, ifpsComp, ifps3,
+    //ifpii_controls, ifpii_std, ifpii_classes, ifpii_graphics, ifpii_forms, ifpii_stdctrls, ifpii_extctrls, ifpii_menus, ifpidateutils,
+    //ifpiir_controls, ifpiir_std, ifpiir_classes, ifpiir_graphics, ifpiir_forms, ifpiir_stdctrls, ifpiir_extctrls, ifpiir_menus, ifpidateutilsr,
+
   StrMan, FastStrings, WinShell, //DirectShow9, //WinShell added by adenry, DirectShow9 removed by adenry
   WaveformAdapter, formVerticalScaling, formAudioStreams, Types, CommonTypes, NetflixQualityCheck, FFMPEGHelper,
-  TntDialogs;
+System.ImageList;
 
 type
   TfrmMain = class(TForm)
@@ -112,7 +113,6 @@ type
     rdoFinalTime: TRadioButton;
     rdoBoth: TRadioButton;
     MiMenu: TMiMenu;
-    dlgLoadFile: TTntOpenDialog;
     tmrVideo: TTimer;
     N17: TMenuItem;
     mnuSubtitleToDisplay: TMenuItem;
@@ -128,7 +128,7 @@ type
     mnuSubtitles: TMenuItem;
     mnuCombineSubtitles: TMenuItem;
     mnuFastSmartLineAdjust: TMenuItem;
-    cmbOrgCharset: TComboBox;
+    cmbOrgCharset:  TComboBox;
     cmbTransCharset: TComboBox;
     mnuAddSyncPoint: TMenuItem;
     mnuLoadProject: TMenuItem;
@@ -247,7 +247,7 @@ type
     mnuUndo: TMenuItem;
     mnuRedo: TMenuItem;
     mnuPascalScripts: TMenuItem;
-    psCompExec: TIFPS3CompExec;
+
     mnu40P: TMenuItem;
     mnu30P: TMenuItem;
     mnu20P: TMenuItem;
@@ -491,7 +491,6 @@ type
     // Waveform controls and menus
     pnlWAVDisplay: TPanel;
     pnlWaveformVideo: TPanel;
-    dlgLoadWaveform: TTntOpenDialog;
     // Popup menu
     mnuWaveformPopupMenu: TPopupMenu;
     mnuWaveformOpen: TMenuItem;
@@ -545,6 +544,8 @@ type
     btnZoomVertical: TSWButton;
     
     mnuNetflixQualityCheck: TMenuItem;
+    dlgLoadFile: TOpenDialog;
+    dlgLoadWaveform: TOpenDialog;
 
 
     procedure lstSubtitlesInitNode(Sender: TBaseVirtualTree; ParentNode,
@@ -743,6 +744,7 @@ type
     procedure mnuSaveSMILClick(Sender: TObject);
     procedure mnuUndoClick(Sender: TObject);
     procedure mnuRedoClick(Sender: TObject);
+    {
     procedure psCompExecCompile(Sender: TIFPS3CompExec);
     procedure psCompExecExecute(Sender: TIFPS3CompExec);
     procedure psCompExecCompImport(Sender: TObject;
@@ -750,11 +752,12 @@ type
     procedure psCompExecExecImport(Sender: TObject; se: TIFPSExec;
       x: TIFPSRuntimeClassImporter);
     procedure psCompExecAfterExecute(Sender: TIFPS3CompExec);
+    }
     procedure btnSyncPoint1Click(Sender: TObject);
     procedure btnSyncPoint2Click(Sender: TObject);
     procedure mnuFirstSyncPointClick(Sender: TObject);
     procedure mnuLastSyncPointClick(Sender: TObject);
-    procedure cmbOCRScriptsSelect(Sender: TObject);
+   // procedure cmbOCRScriptsSelect(Sender: TObject);
     procedure mnuShowInMainFormClick(Sender: TObject);
     procedure mnuUseInPlaceEditionClick(Sender: TObject);
     procedure mnuShowSubtitlesClick(Sender: TObject);
@@ -1002,7 +1005,7 @@ type
     procedure mnuDefaultVidRendClick(Sender: TObject);
     procedure mnuVMR9VidRendClick(Sender: TObject);
     procedure mnuRefreshLanguageFilesClick(Sender: TObject);
-    procedure chkOCRScriptsClick(Sender: TObject);
+  //  procedure chkOCRScriptsClick(Sender: TObject);
     procedure mnuAROriginalClick(Sender: TObject);
     procedure mnuAR4_3Click(Sender: TObject);
     procedure mnuAR16_9Click(Sender: TObject);
@@ -3025,7 +3028,7 @@ begin
     //    Initialize variables    //
     // ---------------------------//
     Caption               := ID_PROGRAM;
-    DecimalSeparator      := ',';
+    FormatSettings.DecimalSeparator      := ',';
     OrgFile               := '';
     TransFile             := '';
     MovieFile             := '';
@@ -3466,7 +3469,7 @@ begin
     // ----------------------------- //
     //            Advanced           //
     // ----------------------------- //
-    RepeatableChars         := Ini.ReadString('Information and Errors', 'Repeatable chars', '-¡!¿?";\/_[]=');
+    RepeatableChars         := Ini.ReadString('Information and Errors', 'Repeatable chars', '-??";\/_[]=');
     ProhibitedChars         := Ini.ReadString('Information and Errors', 'Prohibited chars', '@#*');
     ToleranceForRepeated    := Ini.ReadInteger('Information and Errors', 'Tolerance for repeated subtitles', 100);
     SpaceAfterChars         := Ini.ReadString('Information and Errors', 'Space after characters', '-');
@@ -3528,7 +3531,7 @@ begin
       ErrorsToCheck.eWhatUnnecessarySpaces := ErrorsToCheck.eWhatUnnecessarySpaces + [DoubleSpacesAndEnters];
     if Ini.ReadBool('Unnecessary spaces to check for', 'Spaces in front of punctuation marks', True) then
       ErrorsToCheck.eWhatUnnecessarySpaces := ErrorsToCheck.eWhatUnnecessarySpaces + [SpacesFrontPunctuation];
-    if Ini.ReadBool('Unnecessary spaces to check for', 'Spaces after "¿" and "¡"', True) then
+    if Ini.ReadBool('Unnecessary spaces to check for', 'Spaces after "? and "?', True) then
       ErrorsToCheck.eWhatUnnecessarySpaces := ErrorsToCheck.eWhatUnnecessarySpaces + [SpacesAfterQuestionAndExclamation];
     if Ini.ReadBool('Unnecessary spaces to check for', 'Spaces before "?" and  "!"', True) then
       ErrorsToCheck.eWhatUnnecessarySpaces := ErrorsToCheck.eWhatUnnecessarySpaces + [SpacesBeforeQuestionAndExclamation];
@@ -3570,7 +3573,7 @@ begin
       ErrorsToFix.eWhatUnnecessarySpaces := ErrorsToFix.eWhatUnnecessarySpaces + [DoubleSpacesAndEnters];
     if Ini.ReadBool('Unnecessary spaces to fix', 'Spaces in front of punctuation marks', True) then
       ErrorsToFix.eWhatUnnecessarySpaces := ErrorsToFix.eWhatUnnecessarySpaces + [SpacesFrontPunctuation];
-    if Ini.ReadBool('Unnecessary spaces to fix', 'Spaces after "¿" and "¡"', True) then
+    if Ini.ReadBool('Unnecessary spaces to fix', 'Spaces after "? and "?', True) then
       ErrorsToFix.eWhatUnnecessarySpaces := ErrorsToFix.eWhatUnnecessarySpaces + [SpacesAfterQuestionAndExclamation];
     if Ini.ReadBool('Unnecessary spaces to fix', 'Spaces before "?" and  "!"', True) then
       ErrorsToFix.eWhatUnnecessarySpaces := ErrorsToFix.eWhatUnnecessarySpaces + [SpacesBeforeQuestionAndExclamation];
@@ -3631,8 +3634,8 @@ begin
     VisualSubReprColor := Ini.ReadInteger('Video preview', 'Visual sub repres color', pnlVisSubReprColor.Font.Color); //added by adenry
 
     if Ini.ReadBool('List look', 'Show grid lines', True) then
-      lstSubtitles.TreeOptions.PaintOptions := [toShowHorzGridLines, toShowVertGridLines, toShowButtons, toShowDropmark, toShowTreeLines,toThemeAware,toUseBlendedImages,toAlwaysHideSelection] else //,toAlwaysHideSelection added by adenry
-      lstSubtitles.TreeOptions.PaintOptions := [toShowButtons, toShowDropmark, toShowTreeLines,toThemeAware,toUseBlendedImages,toAlwaysHideSelection]; //,toAlwaysHideSelection added by adenry
+      lstSubtitles.TreeOptions.PaintOptions := [TVTPaintOption.toShowHorzGridLines, TVTPaintOption.toShowVertGridLines, TVTPaintOption.toShowButtons, TVTPaintOption.toShowDropmark, TVTPaintOption.toShowTreeLines,TVTPaintOption.toThemeAware,TVTPaintOption.toUseBlendedImages,TVTPaintOption.toAlwaysHideSelection] else //,toAlwaysHideSelection added by adenry
+      lstSubtitles.TreeOptions.PaintOptions := [TVTPaintOption.toShowButtons, TVTPaintOption.toShowDropmark, TVTPaintOption.toShowTreeLines,TVTPaintOption.toThemeAware,TVTPaintOption.toUseBlendedImages,TVTPaintOption.toAlwaysHideSelection]; //,toAlwaysHideSelection added by adenry
     ApplyStyleInList := Ini.ReadBool('List look', 'Apply style to subtitles', True);
     MarkUnTransSubs  := Ini.ReadBool('List look', 'Mark untranslated subtitles', True);
     UnTransSubsColor := Ini.ReadInteger('List look', 'Untranslated subtitles color', pnlUnTransColor.Font.Color); //clRed changed to pnlUnTransColor.Font.Color by adenry
@@ -3643,11 +3646,11 @@ begin
       lstSubtitles.ScrollBarOptions.ScrollBars := ssBoth;
     //added by adenry: begin
     if Ini.ReadBool('List look', 'Right click selection', True) then
-      lstSubtitles.TreeOptions.SelectionOptions := lstSubtitles.TreeOptions.SelectionOptions + [toRightClickSelect] else
-      lstSubtitles.TreeOptions.SelectionOptions := lstSubtitles.TreeOptions.SelectionOptions - [toRightClickSelect];
+      lstSubtitles.TreeOptions.SelectionOptions := lstSubtitles.TreeOptions.SelectionOptions + [TVTSelectionOption.toRightClickSelect] else
+      lstSubtitles.TreeOptions.SelectionOptions := lstSubtitles.TreeOptions.SelectionOptions - [TVTSelectionOption.toRightClickSelect];
     //hidden (for now) option to disable rectangle selection
     if Ini.ReadBool('List look', 'Disable rectangle selection', False) then
-      lstSubtitles.TreeOptions.SelectionOptions := lstSubtitles.TreeOptions.SelectionOptions + [toDisableDrawSelection];
+      lstSubtitles.TreeOptions.SelectionOptions := lstSubtitles.TreeOptions.SelectionOptions + [TVTSelectionOption.toDisableDrawSelection];
     //added by adenry: end
     lstSubtitles.DefaultNodeHeight := Ini.ReadInteger('List look', 'Row height', 18); //added by adenry
     lstSubtitles.TextMargin        := Ini.ReadInteger('List look', 'Text margin', 6); //added by adenry
@@ -3716,11 +3719,11 @@ begin
     if Ini.ReadBool('Interface', 'Use in-place edition', False) then
     begin
       mnuUseInPlaceEdition.Checked := True;
-      lstSubtitles.TreeOptions.MiscOptions := lstSubtitles.TreeOptions.MiscOptions + [toEditable];
+      lstSubtitles.TreeOptions.MiscOptions := lstSubtitles.TreeOptions.MiscOptions + [TVTMiscOption.toEditable];
     end else
     begin
       mnuUseInPlaceEdition.Checked := False;
-      lstSubtitles.TreeOptions.MiscOptions := lstSubtitles.TreeOptions.MiscOptions - [toEditable];
+      lstSubtitles.TreeOptions.MiscOptions := lstSubtitles.TreeOptions.MiscOptions - [TVTMiscOption.toEditable];
     end;
 
     SetVideoPreviewMode(Ini.ReadBool('Interface', 'Video Preview Mode', True)); //False changed to True by adenry
@@ -3728,27 +3731,27 @@ begin
     mnuColNum.Checked := Ini.ReadBool('Interface', 'Col Num visible', True);
     mnuColNumPopup.Checked := mnuColNum.Checked;
     if mnuColNum.Checked = False then
-      lstSubtitles.Header.Columns[0].Options := lstSubtitles.Header.Columns[0].Options - [coVisible];
+      lstSubtitles.Header.Columns[0].Options := lstSubtitles.Header.Columns[0].Options - [TVTColumnOption.coVisible];
     mnuColShow.Checked := Ini.ReadBool('Interface', 'Col Show visible', True);
     mnuColShowPopup.Checked := mnuColShow.Checked;
     if mnuColShow.Checked = False then
-      lstSubtitles.Header.Columns[1].Options := lstSubtitles.Header.Columns[1].Options - [coVisible];
+      lstSubtitles.Header.Columns[1].Options := lstSubtitles.Header.Columns[1].Options - [TVTColumnOption.coVisible];
     mnuColHide.Checked := Ini.ReadBool('Interface', 'Col Hide visible', True);
     mnuColHidePopup.Checked := mnuColHide.Checked;
     if mnuColHide.Checked = False then
-      lstSubtitles.Header.Columns[2].Options := lstSubtitles.Header.Columns[2].Options - [coVisible];
+      lstSubtitles.Header.Columns[2].Options := lstSubtitles.Header.Columns[2].Options - [TVTColumnOption.coVisible];
     mnuColText.Checked := Ini.ReadBool('Interface', 'Col Text visible', True);
     mnuColTextPopup.Checked := mnuColText.Checked;
     if mnuColText.Checked = False then
-      lstSubtitles.Header.Columns[3].Options := lstSubtitles.Header.Columns[3].Options - [coVisible];
+      lstSubtitles.Header.Columns[3].Options := lstSubtitles.Header.Columns[3].Options - [TVTColumnOption.coVisible];
     mnuColDuration.Checked := Ini.ReadBool('Interface', 'Col Duration visible', True);
     mnuColDurationPopup.Checked := mnuColDuration.Checked;
     if mnuColDuration.Checked = False then
-      lstSubtitles.Header.Columns[5].Options := lstSubtitles.Header.Columns[5].Options - [coVisible];
+      lstSubtitles.Header.Columns[5].Options := lstSubtitles.Header.Columns[5].Options - [TVTColumnOption.coVisible];
     mnuColPause.Checked := Ini.ReadBool('Interface', 'Col Pause visible', True);
     mnuColPausePopup.Checked := mnuColPause.Checked;
     if mnuColPause.Checked = False then
-      lstSubtitles.Header.Columns[6].Options := lstSubtitles.Header.Columns[6].Options - [coVisible];
+      lstSubtitles.Header.Columns[6].Options := lstSubtitles.Header.Columns[6].Options - [TVTColumnOption.coVisible];
     //added by adenry: end
 
     SetTranslatorMode(Ini.ReadBool('Interface', 'Translator mode', False), False);
@@ -5461,13 +5464,13 @@ end;
 
 procedure TfrmMain.mnuSaveProjectClick(Sender: TObject);
 var
-  dlgSaveProject : TTntSaveDialog;
+  dlgSaveProject : TSaveDialog;
   Ini            : TIniFile;
   OriginalFile   : String;
   TranslatedFile : String;
   MMovieFile     : String;
 begin
-  dlgSaveProject := TTntSaveDialog.Create(Application);
+  dlgSaveProject := TSaveDialog.Create(Application);
   try
     if OrgFile <> '' then
     begin
@@ -8288,7 +8291,7 @@ procedure TfrmMain.cmbInputFPSKeyPress(Sender: TObject; var Key: Char);
 begin
   if (Key = Chr(VK_RETURN)) and (IsFloat(cmbInputFPS.Text)) then
     AddFPSItem(StrToFloat(cmbInputFPS.Text), True, True, True) else
-  if (Key in ['0'..'9', DecimalSeparator, Chr(VK_RETURN), Chr(VK_BACK)]) = False then
+  if (Key in ['0'..'9', FormatSettings.DecimalSeparator, Chr(VK_RETURN), Chr(VK_BACK)]) = False then
     Key := #0;
 end;
 
@@ -8298,7 +8301,7 @@ procedure TfrmMain.cmbFPSKeyPress(Sender: TObject; var Key: Char);
 begin
   if (Key = Chr(VK_RETURN)) and (IsFloat(cmbFPS.Text)) then
     AddFPSItem(StrToFloat(cmbFPS.Text), False, True, False) else
-  if (Key in ['0'..'9', DecimalSeparator, Chr(VK_RETURN), Chr(VK_BACK)]) = False then
+  if (Key in ['0'..'9', FormatSettings.DecimalSeparator, Chr(VK_RETURN), Chr(VK_BACK)]) = False then
     Key := #0;
 end;
 
@@ -9648,8 +9651,8 @@ end;
 procedure TfrmMain.mnuUseInPlaceEditionClick(Sender: TObject);
 begin
   if mnuUseInPlaceEdition.Checked = False then
-    lstSubtitles.TreeOptions.MiscOptions := lstSubtitles.TreeOptions.MiscOptions - [toEditable] else
-    lstSubtitles.TreeOptions.MiscOptions := lstSubtitles.TreeOptions.MiscOptions + [toEditable];    
+    lstSubtitles.TreeOptions.MiscOptions := lstSubtitles.TreeOptions.MiscOptions - [TVTMiscOption.toEditable] else
+    lstSubtitles.TreeOptions.MiscOptions := lstSubtitles.TreeOptions.MiscOptions + [TVTMiscOption.toEditable];
 end;
 
 // -----------------------------------------------------------------------------
@@ -9885,7 +9888,7 @@ end;
 procedure TfrmMain.lstSubtitlesEditing(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
 begin
-  Allowed := (Column <> 0) and (toEditable in lstSubtitles.TreeOptions.MiscOptions);
+  Allowed := (Column <> 0) and (TVTMiscOption.toEditable in lstSubtitles.TreeOptions.MiscOptions);
 end;
 
 // -----------------------------------------------------------------------------
@@ -10002,6 +10005,9 @@ end;
 // -----------------------------------------------------------------------------
 
 procedure TfrmMain.mnuPascalScriptClick(Sender: TObject);
+begin
+  {
+end;
   procedure OutputMsg(s: String);
   var
     l          : LongInt;
@@ -10036,25 +10042,26 @@ begin
   finally
     Screen.Cursor := crDefault; //added by adenry
   end;
+  }
 end;
 
 // -----------------------------------------------------------------------------
 // PASCAL SCRIPT FUNCTIONS WERE HERE
 // -----------------------------------------------------------------------------
-
+{
 procedure TfrmMain.psCompExecCompile(Sender: TIFPS3CompExec);
 begin
-  CompExecCompile(Sender);
+//  CompExecCompile(Sender);
 end;
 
 procedure TfrmMain.psCompExecExecute(Sender: TIFPS3CompExec);
 begin
-  psCompExec.SetVarToInstance('Application', Application);
+ // psCompExec.SetVarToInstance('Application', Application);
   //psCompExec.SetVarToInstance('Self', Self);
 end;
 
 // -----------------------------------------------------------------------------
-
+{
 procedure TfrmMain.psCompExecCompImport(Sender: TObject;
   x: TIFPSPascalCompiler);
 begin
@@ -10114,7 +10121,7 @@ begin
     AutoRecheckAllErrors([etOCRErrors]);
   end;
 end;
-
+}
 // -----------------------------------------------------------------------------
 
 procedure TfrmMain.mnuShowInMainFormClick(Sender: TObject);
@@ -11807,7 +11814,7 @@ begin
     end;
     Handled := True; //don't scroll the list in these cases!
   end else
-  if (ssLeft in Shift) and Assigned(lstSubtitles.FocusedNode) and (lstSubtitles.SelectedCount = 1) and (((MousePos.X = ClickPoint.X)and(MousePos.Y = ClickPoint.Y)) or (toDisableDrawSelection in lstSubtitles.TreeOptions.SelectionOptions)) then
+  if (ssLeft in Shift) and Assigned(lstSubtitles.FocusedNode) and (lstSubtitles.SelectedCount = 1) and (((MousePos.X = ClickPoint.X)and(MousePos.Y = ClickPoint.Y)) or (TVTSelectionOption.toDisableDrawSelection in lstSubtitles.TreeOptions.SelectionOptions)) then
   begin
     if WheelDelta > 0 then
     begin //WHEEL UP
@@ -12136,8 +12143,8 @@ end;
 procedure TfrmMain.SetColumnVisibility(Col: Byte; Visible: Boolean);
 begin
   if Visible then
-    lstSubtitles.Header.Columns[Col].Options := lstSubtitles.Header.Columns[Col].Options + [coVisible] else
-    lstSubtitles.Header.Columns[Col].Options := lstSubtitles.Header.Columns[Col].Options - [coVisible];
+    lstSubtitles.Header.Columns[Col].Options := lstSubtitles.Header.Columns[Col].Options + [TVTColumnOption.coVisible] else
+    lstSubtitles.Header.Columns[Col].Options := lstSubtitles.Header.Columns[Col].Options - [TVTColumnOption.coVisible];
   case Col of
     0: begin mnuColNum.Checked := Visible; mnuColNumPopup.Checked := Visible; end;
     1: begin mnuColShow.Checked := Visible; mnuColShowPopup.Checked := Visible; end;
@@ -14522,7 +14529,7 @@ begin
   ShouldRefreshTimes := False;
   ShouldRefreshTimes2 := False;
   for i := 0 to lstSubtitles.Header.Columns.Count-1 do
-    lstSubtitles.Header.Columns[i].Options := lstSubtitles.Header.Columns[i].Options + [coAllowFocus];
+    lstSubtitles.Header.Columns[i].Options := lstSubtitles.Header.Columns[i].Options + [TVTColumnOption.coAllowFocus];
 end;
 //added by adenry: end
 
